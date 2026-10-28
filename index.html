@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071021">
+<title>RIVALS Security Lab — Simulator</title>
+<style>
+:root{--bg:#050b17;--panel:#0a1427;--panel2:#0d1b32;--line:#1c3558;--text:#eef4ff;--muted:#9bb0d0;--purple:#8657ff;--cyan:#23d5f4;--green:#35e6a3;--yellow:#ffc857;--red:#ff5576}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 45% -10%,#172d55 0,transparent 42%),var(--bg);color:var(--text);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,select{font:inherit}button{cursor:pointer;color:inherit}button:focus-visible,select:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.topbar{height:38px;padding:0 18px;display:flex;justify-content:space-between;align-items:center;background:#091326;border-bottom:1px solid #152744;color:#b9c9e5;font-size:12px}
+.browser{height:48px;display:flex;align-items:center;gap:14px;padding:0 16px;background:#0b172b;border-bottom:1px solid #203654}
+.browser .arrow{font-size:22px;color:#6d8bb8}.address{margin:auto;max-width:650px;flex:1;background:#1a2b46;border:1px solid #2b4263;border-radius:12px;text-align:center;padding:8px 12px;color:#d9e6fa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header{display:flex;align-items:center;gap:18px;padding:19px 22px;background:linear-gradient(100deg,#0b1730,#0b1427 68%,#101e3a);border-bottom:1px solid #203451}
+.logo{font-weight:1000;font-size:27px;letter-spacing:-1.5px;font-style:italic;border:3px solid #8e66ff;border-left-color:#ffcf50;border-bottom-color:#ffcf50;border-radius:12px;padding:3px 10px;transform:skew(-5deg);box-shadow:0 0 22px #784aff24}
+h1{font-size:22px;margin:0;letter-spacing:.2px}.gradient{color:#a17aff}.subtitle{margin-top:3px;color:#87bfff;font-size:13px}.status{margin-left:auto;display:flex;align-items:center;gap:8px;padding:10px 13px;border:1px solid #29476b;background:#09182c;border-radius:13px;font-size:13px}.dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 12px #35e6a366}
+.layout{display:grid;grid-template-columns:170px minmax(0,1fr) minmax(280px,340px);gap:14px;padding:15px;max-width:1500px;margin:auto}
+.sidebar{display:flex;flex-direction:column;gap:7px;padding:5px 0}.nav{border:1px solid transparent;background:transparent;color:#afc1df;text-align:left;padding:13px 12px;border-radius:10px;display:flex;gap:11px;align-items:center}.nav b{font-size:18px;width:22px;text-align:center}.nav.active,.nav:hover{background:linear-gradient(100deg,#38249b99,#151d4d);border-color:#4937b8;color:white}.side-note{margin-top:auto;border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--muted);font-size:12px;background:#091326}.side-note strong{display:block;color:#e5efff;font-size:13px;margin-bottom:5px}
+.panel{border:1px solid #1b3354;border-radius:14px;background:linear-gradient(145deg,#091427,#07101e);padding:16px;min-width:0;box-shadow:0 12px 28px #00000016}
+.panelhead{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px}.panelhead .ico{font-size:23px;color:#9b77ff}.panelhead h2{font-size:17px;margin:0}.panelhead p{font-size:12px;color:var(--muted);margin:2px 0 0}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.feature{position:relative;min-height:150px;padding:14px;border:1px solid #213c61;border-radius:12px;background:linear-gradient(145deg,#0b1930,#091426);transition:border-color .15s,transform .15s}.feature.enabled{border-color:#7654f2;box-shadow:inset 0 0 24px #7048ff10}.feature .ficon{font-size:24px;color:var(--cyan);margin-bottom:6px}.feature h3{font-size:14px;margin:0 0 6px}.feature p{font-size:12px;line-height:1.45;color:#afc1df;margin:0;padding-right:2px}.toggle{position:absolute;right:12px;bottom:12px;width:47px;height:26px;border:0;border-radius:30px;background:#293c5d;padding:3px;transition:.2s}.toggle span{display:block;width:20px;height:20px;border-radius:50%;background:#c8d5ec;box-shadow:0 1px 4px #0007;transition:.2s}.toggle[aria-pressed="true"]{background:var(--purple)}.toggle[aria-pressed="true"] span{transform:translateX(21px);background:white}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px;padding:12px;border:1px solid #1a3150;border-radius:12px;background:#081326}.primary,.secondary{border:1px solid #5b4be0;border-radius:11px;padding:11px 18px;background:linear-gradient(110deg,#6844e8,#8a5cff);font-weight:700}.secondary{background:#101f38;border-color:#2a4165;color:#c3d2eb}.primary:disabled,.secondary:disabled{opacity:.45;cursor:not-allowed}.duration{margin-left:auto;color:var(--muted);font-size:12px;display:flex;align-items:center;gap:8px}.duration select{background:#0b1b32;border:1px solid #294567;border-radius:8px;color:#eaf1ff;padding:8px}
+.gameinfo{margin-top:13px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.stat{border-right:1px solid #1b3150;padding:4px 8px}.stat:last-child{border:0}.stat small{display:block;color:var(--muted);font-size:11px}.stat strong{font-size:13px}
+.logpanel{display:flex;flex-direction:column;min-height:500px}.loglist{border:1px solid #1a3150;border-radius:11px;background:#071224;padding:7px;min-height:300px;max-height:480px;overflow:auto}.logrow{display:grid;grid-template-columns:58px 75px minmax(0,1fr);gap:7px;padding:7px 3px;border-bottom:1px solid #142641;font-size:11px;align-items:start}.logrow:last-child{border-bottom:0}.time{color:#8db6eb;font-variant-numeric:tabular-nums}.tag{font-weight:800}.tag.info{color:#36baff}.tag.esp{color:#b58cff}.tag.move{color:#45e6ad}.tag.warn{color:var(--yellow)}.tag.anti{color:var(--red)}.tag.aim{color:var(--cyan)}.tag.remote{color:#a78bff}.logmsg{color:#bfd0eb;overflow-wrap:anywhere}.logactions{display:flex;gap:7px;margin-top:9px}.smallbtn{padding:7px 10px;border:1px solid #2a4164;border-radius:8px;background:#0d1a30;color:#afc4e5;font-size:12px}
+.safety{margin-top:13px;padding:12px;border:1px solid #087c65;border-radius:12px;background:#04231f;color:#bdebe0;font-size:12px;display:flex;gap:10px}.safety strong{display:block;color:#42e9ac;font-size:13px;margin-bottom:3px}.safety .shield{font-size:23px}
+.teststate{font-size:12px;color:var(--muted);margin-left:auto}.pulse{animation:pulse 1.4s infinite}@keyframes pulse{50%{opacity:.45}}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#162a47;border:1px solid #42628d;padding:10px 15px;border-radius:10px;box-shadow:0 8px 30px #0008;z-index:10;display:none;max-width:90vw;font-size:13px}
+@media(max-width:1050px){.layout{grid-template-columns:145px minmax(0,1fr)}.rightcol{grid-column:2}.logpanel{min-height:0}.loglist{max-height:350px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.topbar{height:30px}.browser{height:42px}.header{padding:14px;gap:12px;flex-wrap:wrap}.logo{font-size:20px}.header h1{font-size:18px}.status{margin-left:0;padding:7px 10px}.layout{display:flex;flex-direction:column;padding:10px}.sidebar{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.nav{justify-content:center;padding:9px 4px;font-size:12px;gap:5px}.nav b{width:auto}.side-note{display:none}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.feature{min-height:160px;padding:11px}.feature p{font-size:11px}.controls{align-items:stretch}.primary,.secondary{flex:1}.duration{margin:3px 0 0;width:100%;justify-content:space-between}.stats{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2){border-right:0}.stat{padding:8px}.logpanel{min-height:0}.logrow{grid-template-columns:52px 67px minmax(0,1fr);font-size:10px}.panel{padding:12px}}
+</style>
+</head>
+<body>
+<div class="topbar"><span>iPad · Security Lab</span><span>Wi‑Fi　100%</span></div>
+<div class="browser"><span class="arrow">‹</span><span class="arrow">›</span><div class="address">🔒 rivals-security-lab.local / simulator</div><span class="arrow">↻</span><span class="arrow">⇧</span></div>
+<header class="header">
+  <div class="logo">RIVALS</div>
+  <div><h1>SECURITY <span class="gradient">SIMULATOR</span></h1><div class="subtitle">Mobile testing dashboard · Authorized use only</div></div>
+  <div class="status"><span class="dot" id="statusDot"></span><span><strong id="statusText">Local simulator</strong><br><small style="color:var(--muted)">No game connection</small></span></div>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Sections">
+    <button class="nav active" data-section="Home"><b>⌂</b> Home</button>
+    <button class="nav" data-section="ESP"><b>◉</b> ESP</button>
+    <button class="nav" data-section="Movement"><b>↗</b> Movement</button>
+    <button class="nav" data-section="Combat"><b>⌖</b> Combat</button>
+    <button class="nav" data-section="Validation"><b>◇</b> Validation</button>
+    <button class="nav" data-section="Logs"><b>▤</b> Logs</button>
+    <div class="side-note"><strong>⬡ Private Test Mode</strong>All activity is simulated locally in this page. No scripts are injected and no live game is contacted.</div>
+  </nav>
+  <main class="panel">
+    <div class="panelhead"><div class="ico">ϟ</div><div><h2>Test Modules</h2><p>Toggle a module, then start a local simulation to generate sample events.</p></div><span class="teststate" id="runState">● Ready</span></div>
+    <div class="cards" id="cards">
+      <article class="feature" data-feature="esp"><div class="ficon">◉</div><h3>ESP Visualization</h3><p>Preview a mock overlay concept for entities in a sandbox scene. No real player data is read.</p><button class="toggle" aria-label="Toggle ESP Visualization" aria-pressed="false"><span></span></button></article>
+      <article class="feature" data-feature="speed"><div class="ficon">➤</div><h3>Speed Test</h3><p>Simulate an excessive movement-speed report and check a configurable server threshold.</p><button class="toggle" aria-label="Toggle Speed Test" aria-pressed="false"><span></span></button></article>
+      <article class="feature" data-feature="aim"><div class="ficon">⊕</div><h3>Aim Validation</h3><p>Generate sample hit-rate and aim-validation events for an anti-cheat review.</p><button class="toggle" aria-label="Toggle Aim Validation" aria-pressed="false"><span></span></button></article>
+      <article class="feature" data-feature="fly"><div class="ficon">↟</div><h3>Fly Test</h3><p>Simulate an airborne-duration / collision check without modifying a game character.</p><button class="toggle" aria-label="Toggle Fly Test" aria-pressed="false"><span></span></button></article>
+      <article class="feature" data-feature="remote"><div class="ficon">&lt;/&gt;</div><h3>RemoteEvent Validation</h3><p>Model rate-limit and malformed-payload checks locally; nothing is sent to Roblox.</p><button class="toggle" aria-label="Toggle RemoteEvent Validation" aria-pressed="false"><span></span></button></article>
+      <article class="feature" data-feature="detection"><div class="ficon">⬡</div><h3>Detection Logs</h3><p>Record simulated warnings, validation outcomes, and anti-cheat flags in the log panel.</p><button class="toggle" aria-label="Toggle Detection Logs" aria-pressed="false"><span></span></button></article>
+    </div>
+    <div class="controls">
+      <button class="primary" id="startBtn">▶ Start Test</button>
+      <button class="secondary" id="stopBtn" disabled>■ Stop</button>
+      <label class="duration">Test duration
+        <select id="duration"><option value="1">1 minute</option><option value="5" selected>5 minutes</option><option value="10">10 minutes</option></select>
+      </label>
+    </div>
+    <section class="panel gameinfo" style="padding:13px">
+      <div class="panelhead" style="margin-bottom:9px"><div class="ico">▣</div><div><h2>Session Info</h2><p>Local demonstration session</p></div></div>
+      <div class="stats">
+        <div class="stat"><small>Environment</small><strong>Offline Sandbox</strong></div>
+        <div class="stat"><small>Test modules</small><strong id="enabledCount">0 enabled</strong></div>
+        <div class="stat"><small>Events logged</small><strong id="eventCount">0</strong></div>
+        <div class="stat"><small>Elapsed</small><strong id="elapsed">00:00</strong></div>
+      </div>
+    </section>
+    <div class="safety"><div class="shield">🛡</div><div><strong>Safe testing boundary</strong>This page is a UI and event simulator only. It does not inject executors, access game memory, connect to RIVALS, or send RemoteEvents. Use a private, authorized test experience for real server-side validation.</div></div>
+  </main>
+  <aside class="panel logpanel rightcol">
+    <div class="panelhead"><div class="ico">▤</div><div><h2>Detection Logs</h2><p>Generated locally by the simulator.</p></div></div>
+    <div class="loglist" id="loglist" aria-live="polite"></div>
+    <div class="logactions"><button class="smallbtn" id="sampleBtn">＋ Add sample events</button><button class="smallbtn" id="clearBtn">Clear logs</button></div>
+  </aside>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const $$ = s => [...document.querySelectorAll(s)];
+  const names = {esp:"ESP Visualization",speed:"Speed Test",aim:"Aim Validation",fly:"Fly Test",remote:"RemoteEvent Validation",detection:"Detection Logs"};
+  const state = {running:false, enabled:new Set(), logs:0, started:0, interval:null, deadline:null, elapsedTimer:null};
+  const loglist=$("#loglist");
+  const pad=n=>String(n).padStart(2,"0");
+  function clock(){const d=new Date();return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;}
+  function toast(msg){const el=$("#toast");el.textContent=msg;el.style.display="block";clearTimeout(toast.t);toast.t=setTimeout(()=>el.style.display="none",2400);}
+  function addLog(type,msg){
+    const row=document.createElement("div");row.className="logrow";
+    const time=document.createElement("span");time.className="time";time.textContent=clock();
+    const tag=document.createElement("span");tag.className="tag "+type;tag.textContent=({info:"[INFO]",esp:"[ESP]",move:"[MOVE]",warn:"[WARN]",anti:"[DETECT]",aim:"[AIM]",remote:"[REMOTE]",fly:"[FLY]"})[type]||"[INFO]";
+    const text=document.createElement("span");text.className="logmsg";text.textContent=msg;
+    row.append(time,tag,text);loglist.append(row);loglist.scrollTop=loglist.scrollHeight;state.logs++;
+    $("#eventCount").textContent=state.logs;
+    if(loglist.children.length>100)loglist.firstElementChild.remove();
+  }
+  function updateCount(){$("#enabledCount").textContent=`${state.enabled.size} enabled`;}
+  function toggleFeature(card){
+    const key=card.dataset.feature;const btn=card.querySelector(".toggle");
+    const on=btn.getAttribute("aria-pressed")!=="true";
+    btn.setAttribute("aria-pressed",String(on));card.classList.toggle("enabled",on);
+    if(on)state.enabled.add(key);else state.enabled.delete(key);
+    updateCount();addLog("info",`${names[key]} ${on?"enabled":"disabled"} (local simulation).`);
+  }
+  $$(".feature .toggle").forEach(btn=>btn.addEventListener("click",()=>toggleFeature(btn.closest(".feature"))));
+  $$(".nav").forEach(btn=>btn.addEventListener("click",()=>{
+    $$(".nav").forEach(b=>b.classList.toggle("active",b===btn));
+    const sec=btn.dataset.section;
+    if(sec==="Logs"){$("#loglist").scrollIntoView({behavior:"smooth",block:"center"});return;}
+    if(sec==="ESP")document.querySelector('[data-feature="esp"]').scrollIntoView({behavior:"smooth",block:"center"});
+    else if(sec==="Movement"){document.querySelector('[data-feature="speed"]').scrollIntoView({behavior:"smooth",block:"center"});}
+    else if(sec==="Combat")document.querySelector('[data-feature="aim"]').scrollIntoView({behavior:"smooth",block:"center"});
+    else if(sec==="Validation")document.querySelector('[data-feature="remote"]').scrollIntoView({behavior:"smooth",block:"center"});
+    else window.scrollTo({top:0,behavior:"smooth"});
+  }));
+  function runChecks(){
+    if(!state.enabled.size){addLog("warn","No modules enabled. Select at least one test module first.");toast("Enable one or more test modules first.");return;}
+    addLog("info","Local test session started. No game server contacted.");
+    if(state.enabled.has("esp"))addLog("esp","Mock entity overlay preview enabled; source data is synthetic.");
+    if(state.enabled.has("speed")){addLog("move","Synthetic movement sample: 42.6 units/s; configured threshold: 20.");addLog("anti","Expected result: server should reject or clamp excessive movement.");}
+    if(state.enabled.has("aim")){addLog("aim","Synthetic hit-rate sample generated for review.");addLog("warn","Expected result: validate line-of-sight, fire cadence, and server-owned hit checks.");}
+    if(state.enabled.has("fly")){addLog("fly","Synthetic airborne duration: 10 seconds; collision confirmation missing.");addLog("anti","Expected result: flag only after checking legitimate movement states.");}
+    if(state.enabled.has("remote")){addLog("remote","Synthetic malformed payload / burst request created locally.");addLog("anti","Expected result: reject invalid schema and apply per-player rate limits.");}
+    if(state.enabled.has("detection"))addLog("info","Detection event capture enabled for this local session.");
+  }
+  function start(){
+    if(state.running)return;
+    state.running=true;state.started=Date.now();
+    state.deadline=state.started+Number($("#duration").value)*60000;
+    $("#startBtn").disabled=true;$("#stopBtn").disabled=false;$("#runState").textContent="● Running";$("#runState").classList.add("pulse");
+    $("#statusText").textContent="Local test running";$("#statusDot").classList.add("pulse");
+    runChecks();
+    state.interval=setInterval(()=>{
+      if(!state.running)return;
+      const left=Math.max(0,Math.ceil((state.deadline-Date.now())/1000));
+      const elapsed=Math.floor((Date.now()-state.started)/1000);
+      $("#elapsed").textContent=`${pad(Math.floor(elapsed/60))}:${pad(elapsed%60)}`;
+      if(elapsed>0&&elapsed%15===0){if(state.enabled.has("detection"))addLog("info","Periodic simulator health check passed.");}
+      if(left<=0)stop(true);
+    },1000);
+  }
+  function stop(complete=false){
+    if(!state.running && !complete)return;
+    state.running=false;clearInterval(state.interval);
+    $("#startBtn").disabled=false;$("#stopBtn").disabled=true;$("#runState").textContent=complete?"● Completed":"● Stopped";$("#runState").classList.remove("pulse");
+    $("#statusText").textContent="Local simulator";$("#statusDot").classList.remove("pulse");
+    addLog("info",complete?"Test duration complete. Local session ended.":"Test stopped by user.");
+  }
+  $("#startBtn").addEventListener("click",start);
+  $("#stopBtn").addEventListener("click",()=>stop(false));
+  $("#sampleBtn").addEventListener("click",()=>{
+    addLog("info","Sample event batch added (simulated).");
+    addLog("warn","Example warning: movement sample exceeded configured threshold.");
+    addLog("anti","Example detection: suspicious action rejected in the model.");
+    addLog("remote","Example RemoteEvent validation: malformed payload rejected in the model.");
+  });
+  $("#clearBtn").addEventListener("click",()=>{loglist.replaceChildren();state.logs=0;$("#eventCount").textContent="0";addLog("info","Log cleared. Ready for a new local test.");});
+  addLog("info","Simulator ready. Offline mode is active.");
+  addLog("info","No Roblox session, executor, or external endpoint is connected.");
+})();
+</script>
+</body>
+</html>
